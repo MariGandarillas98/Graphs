@@ -1,0 +1,41 @@
+﻿IncomeRange;EducationLevel;Percentage
+$100k-$149.9k;AA degree;9.71
+$100k-$149.9k;Bachelor degree;34.21
+$100k-$149.9k;High school graduate;23.01
+$100k-$149.9k;Master degree;32.43
+$100k-$149.9k;No education;0.63
+$150k-$199.9k;AA degree;6.87
+$150k-$199.9k;Bachelor degree;35.84
+$150k-$199.9k;High school graduate;16.32
+$150k-$199.9k;Master degree;40.65
+$150k-$199.9k;No education;0.33
+$25k-$34.9k;AA degree;14.37
+$25k-$34.9k;Bachelor degree;18.02
+$25k-$34.9k;High school graduate;53.49
+$25k-$34.9k;Master degree;9.84
+$25k-$34.9k;No education;4.29
+$35k-$49.AA degree;13.77;
+$35k-$49.Bachelor degree;21.58;
+$35k-$49.High school graduate;49.58;
+$35k-$49.Master degree;12.12;
+$35k-$49.No education;2.95;
+$50k-$74.9k;AA degree;12.92
+$50k-$74.9k;Bachelor degree;27.24
+$50k-$74.9k;High school graduate;39.59
+$50k-$74.9k;Master degree;18.47
+$50k-$74.9k;No education;1.78
+$75k-$99.9k;AA degree;11.88
+$75k-$99.9k;Bachelor degree;29.99
+$75k-$99.9k;High school graduate;31.66
+$75k-$99.9k;Master degree;25.48
+$75k-$99.9k;No education;1.0
+Higher than $200k;AA degree;3.05
+Higher than $200k;Bachelor degree;35.81
+Higher than $200k;High school graduate;9.17
+Higher than $200k;Master degree;51.71
+Higher than $200k;No education;0.27
+Less than $25k;AA degree;12.19
+Less than $25k;Bachelor degree;13.65
+Less than $25k;High school graduate;58.85
+Less than $25k;Master degree;6.82
+Less than $25k;No education;8.49
