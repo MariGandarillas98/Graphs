@@ -494,16 +494,60 @@ write.csv(final_dataset, "Poverty_in_US_coded.csv", row.names = FALSE)
 
 ### 4.1 Communities
 
-```{r}
-# Specify the relative path to the CSV file
-community_data <- read_csv("data/Community_povertystatus_percentage.csv")
+Using Neo4j, we identified and created two distinct communities based on similarities in the dataset using community detection algorithms like Louvain. In Neo4j, communities represent clusters of nodes that are more densely connected to each other than to the rest of the graph, revealing hidden patterns or groupings in the data. The chart explores a key characteristic of these communities: the proportion of people categorized as "Poor" or "Not Poor" in each community. This visualization highlights how poverty status varies across the communities, providing insights into their socio-economic composition and underlying connections.
 
-# Verify the data
-head(community_data)
+```{r}
+# Load the data
+community_data <- read_delim("data/Community_povertystatus.csv", delim = ",", col_names = TRUE)
+
+# Define colors for the plot
+#plot_colors <- c("#1CADE4", "#42BA97", "#2683C6", "#3E8853", "#27CED7", "#62A39F")
+
+# Define colors for PovertyStatus
+plot_colors <- c("#27CED7", "#3E8853")  # Adjust for clear contrast
+
+# Update the CommunityName to descriptive labels
+community_data$CommunityName <- factor(community_data$CommunityName, 
+                                       levels = c(18, 19), 
+                                       labels = c("Community 1", "Community 2"))
+
+# Create the bar plot
+ggplot(community_data, aes(x = CommunityName, y = Percentage, fill = PovertyStatus)) +
+  geom_bar(stat = "identity", position = "stack") +
+  scale_fill_manual(values = plot_colors) +
+  labs(
+    title = "Percentage of Poverty Status in Communities",
+    x = "Community",
+    y = "Percentage",
+    fill = "Poverty Status"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+    axis.title.x = element_text(face = "bold", size = 14),
+    axis.title.y = element_text(face = "bold", size = 14),
+    legend.title = element_text(face = "bold", size = 12),
+    legend.text = element_text(size = 10)
+  )
+
 
 ```
 
 ### 4.2 Similarities
+
+Using Neo4j, we constructed a similarity graph that identifies shared characteristics among individuals based on their marital status, gender, and race. Each cluster visually represents groups of individuals connected by similarities in these attributes. The similarity analysis provides a foundation to explore relationships and patterns within the data, which can guide our research questions. Moving forward, we will leverage these identified similarities to analyze socio-demographic trends and answer our investigative questions, deepening our understanding of the interconnected dynamics within the dataset.
+
+-   **First Graph (Marital Status)**: The graph shows clusters of individuals grouped by their marital status, highlighting connections based on shared marital categories like single, married, or widowed.
+
+    ![](images/sim3-01.jpg)
+
+-   **Second Graph (Gender)**: This graph depicts two main clusters representing gender categories (male and female), with individuals linked to their corresponding gender.
+
+    ![](images/sim2-01.jpg)
+
+-   **Third Graph (Race)**: The graph visualizes clusters of individuals grouped by race, showing the distribution and connections within racial categories such as White, Black, or Others.
+
+![](images/sim1-01.jpg)
 
 ### 4.3 Traiditional Clustering Methods
 
@@ -526,6 +570,7 @@ ds_clust <- ds_val%>%
 ```
 
 ```{r}
+ds_clust$RecordID <-NULL
 # Calculate the Gower distance for ds_clust
 ds_clust_dist <- daisy(ds_clust, metric = "gower")
 # Determine the optimal number of clusters
