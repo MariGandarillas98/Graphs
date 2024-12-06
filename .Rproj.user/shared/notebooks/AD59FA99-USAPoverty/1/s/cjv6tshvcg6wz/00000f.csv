@@ -1,5 +1,0 @@
-"0"," "
-"0","prepared_dataset <- prepared_dataset%>%"
-"0","  dplyr::select("
-"0","    RecordID, HispanicOrigin, Race, Gender, Location, Education, MaritalStatus, Income, HouseholdSize, Age"
-"0","  )"
