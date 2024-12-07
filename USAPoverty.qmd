@@ -501,10 +501,10 @@ Using Neo4j, we identified and created two distinct communities based on similar
 community_data <- read_delim("data/Community_povertystatus.csv", delim = ",", col_names = TRUE)
 
 # Define colors for the plot
-#plot_colors <- c("#1CADE4", "#42BA97", "#2683C6", "#3E8853", "#27CED7", "#62A39F")
+plot_colors <- c("#9EA2A2FF","#C6D4D6FF","#DCEDDF","#A2D4AE","#0F8D7BFF",                  "#5E81ACFF","#236192FF","#0C2340FF")
 
 # Define colors for PovertyStatus
-plot_colors <- c("#27CED7", "#3E8853")  # Adjust for clear contrast
+plot_colors <- c("#C6D4D6FF", "#0F8D7BFF")  # Adjust for clear contrast
 
 # Update the CommunityName to descriptive labels
 community_data$CommunityName <- factor(community_data$CommunityName, 
@@ -693,9 +693,104 @@ grid.arrange(
 
 ### 5.1 What is the educational level of the majority of people living in poverty?
 
+The graph clearly illustrates the distribution of educational levels among individuals by poverty status. The majority of individuals living in poverty fall into the "High school graduate" category, followed by "No education." This indicates that lower educational attainment is strongly associated with poverty. Conversely, the "Bachelor degree" and "Master degree" categories are more prominent among those not living in poverty, highlighting the potential protective role of higher education against economic hardship.
+
+```{r}
+# Load the data
+data_education_percentage <- read_delim("data/povertystatus_education_percentage.csv", delim = ";", col_names = TRUE)
+
+# Define the color palette
+plot_colors <- c("#9EA2A2FF","#C6D4D6FF","#DCEDDF","#A2D4AE","#0F8D7BFF",                  "#5E81ACFF","#236192FF","#0C2340FF")
+
+# Create the bar plot for education level distribution by poverty status
+ggplot(data_education_percentage, aes(x = PovertyStatus, y = Percentage, fill = EducationLevel)) +
+  geom_bar(stat = "identity", position = "stack") +
+  labs(
+    title = "Education Level Distribution
+    by Poverty Status",
+    x = "Poverty Status",
+    y = "Percentage (%)",
+    fill = "Education Level"
+  ) +
+  theme_minimal() +
+  scale_fill_manual(values = plot_colors) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+    axis.title.x = element_text(face = "bold", size = 14),
+    axis.title.y = element_text(face = "bold", size = 14),
+    legend.title = element_text(face = "bold", size = 12),
+    legend.text = element_text(size = 10)
+  )
+
+```
+
 ### 5.2 Are unmarried or unpartnered individuals more likely to experience poverty?
 
+Based on the analysis, unmarried or unpartnered individuals (categorized as "Never Married," "Divorced," "Separated," and "Widowed") are more likely to experience poverty compared to married individuals. The visualization clearly shows that a higher percentage of individuals within the "Poor" category fall into these unmarried or unpartnered groups, with "Never Married" standing out as the most significant. This indicates a correlation between marital status and poverty, where being unpartnered is associated with a greater likelihood of experiencing economic hardship.
+
+```{r}
+# Load the data
+data_marital_percentage <- read_delim("data/povertystatus_marital status_percentage.csv", delim = ";", col_names = TRUE)
+
+# Define colors for the plot
+plot_colors <- c("#9EA2A2FF","#C6D4D6FF","#DCEDDF","#A2D4AE","#0F8D7BFF",                  "#5E81ACFF","#236192FF","#0C2340FF")
+
+# Create the bar plot for marital status distribution across poverty status
+ggplot(data_marital_percentage, aes(x = PovertyStatus, y = Percentage, fill = MaritalStatus)) +
+  geom_bar(stat = "identity", position = "fill") +
+  labs(
+    title = "Marital Status Distribution by Poverty Status",
+    x = "Poverty Status",
+    y = "Percentage (%)",
+    fill = "Marital Status"
+  ) +
+  theme_minimal() +
+  scale_fill_manual(values = plot_colors) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+    axis.title.x = element_text(face = "bold", size = 14),
+    axis.title.y = element_text(face = "bold", size = 14),
+    legend.title = element_text(face = "bold", size = 12),
+    legend.text = element_text(size = 10)
+  )
+
+```
+
 ### 5.3 Is there a correlation between being African American and the likelihood of experiencing poverty?
+
+There appears to be a potential correlation between being African American and the likelihood of experiencing poverty. In the analysis of the communities, we observed that Community 1, which has a higher percentage of individuals living in poverty, also exhibits a larger proportion of African American individuals compared to Community 2. While this does not directly prove causation, it suggests that African Americans may face structural or socioeconomic barriers that increase their likelihood of living in poverty within these communities. Further investigation into other socioeconomic factors, such as education, employment, and access to resources, would be necessary to substantiate this observation.
+
+```{r}
+# Load the data
+community_race_data <- read_delim("data/Community_race_percentage.csv")
+
+# Update the CommunityName to descriptive labels
+community_race_data$CommunityName <- factor(community_race_data$CommunityName, 
+                                            levels = unique(community_race_data$CommunityName),
+                                            labels = paste("Community", seq_along(unique(community_race_data$CommunityName))))
+
+# Define colors for Race
+plot_colors <- c("#9EA2A2FF","#0F8D7BFF","#236192FF","#0C2340FF")
+
+# Create the bar plot for race distribution across communities
+ggplot(community_race_data, aes(x = CommunityName, y = Percentage, fill = Race)) +
+  geom_bar(stat = "identity", position = "stack") +
+  scale_fill_manual(values = plot_colors) +
+  labs(
+    title = "Race Distribution Across Communities",
+    x = "Community",
+    y = "Percentage (%)",
+    fill = "Race"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+    axis.title.x = element_text(face = "bold", size = 14),
+    axis.title.y = element_text(face = "bold", size = 14),
+    legend.title = element_text(face = "bold", size = 12),
+    legend.text = element_text(size = 10)
+  )
+```
 
 ### 5.4 Does gender influence the probability of experiencing poverty?
 
