@@ -24,7 +24,6 @@ install.packages("here")
 install.packages("ROCR")
 install.packages("DT")
 install.packages("gt")
-install.packages("expss")
 install.packages("cowplot")
 install.packages("vcd")
 install.packages("grid")
@@ -689,7 +688,7 @@ grid.arrange(
 )
 ```
 
-##  5. Analysis
+## 5. Analysis
 
 ### 5.1 What is the educational level of the majority of people living in poverty?
 
@@ -819,8 +818,6 @@ ggplot(data_gender_percentage, aes(x = PovertyStatus, y = Percentage, fill = Gen
 ```
 
 Similarly, this is corroborated by the k-means clustering analysis. The graph for Cluster 2, predominantly composed of women, also shows, unfortunately, a higher percentage of individuals living in poverty.
-
-Otro dato triste es denotar como las similiratys entre Varones y Mujeres muestran claramente que no haylaxos entre estos dos
 
 ### 5.5 How is family size related to the likelihood of experiencing poverty?
 
@@ -974,7 +971,7 @@ While attempting to compare the results obtained from the LLM with those generat
 
 The resulting graph is as follows:
 
-![](images/similarity by LLM-01.png){width="366"}
+![](images/similarity%20by%20LLM-01.png){width="366"}
 
 Clearly, the LLM was unable to handle the dataset or apply the Louvain algorithm to calculate similarities, demonstrating that LLMs are not suitable tools for every type of analysis.
 
