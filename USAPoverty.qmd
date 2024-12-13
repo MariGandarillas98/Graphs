@@ -24,6 +24,7 @@ install.packages("here")
 install.packages("ROCR")
 install.packages("DT")
 install.packages("gt")
+install.packages("expss")
 install.packages("cowplot")
 install.packages("vcd")
 install.packages("grid")
@@ -532,23 +533,37 @@ ggplot(community_data, aes(x = CommunityName, y = Percentage, fill = PovertyStat
 
 ```
 
+Both Community 1 and Community 2 exhibit a high proportion of individuals categorized as "Not Poor," as evidenced by the dominant light gray section of the bars, which may suggest a generally higher income status in the dataset.
+
+Although the overall proportion of "Poor" individuals is low, Community 1 does exhibit a slightly higher percentage of "Poor" individuals compared to Community 2. The difference might indicate that the Louvain algorithm used for community detection picked up on underlying structural factors that correlate with poverty status, even if this is not the primary driver of the clustering. The higher proportion of "Poor" individuals in Community 1 suggests potential socio-economic vulnerabilities that might require further attention.
+
 ### 4.2 Similarities
 
 Using Neo4j, we constructed a similarity graph that identifies shared characteristics among individuals based on their marital status, gender, and race. Each cluster visually represents groups of individuals connected by similarities in these attributes. The similarity analysis provides a foundation to explore relationships and patterns within the data, which can guide our research questions. Moving forward, we will leverage these identified similarities to analyze socio-demographic trends and answer our investigative questions, deepening our understanding of the interconnected dynamics within the dataset.
 
--   **First Graph (Marital Status)**: The graph shows clusters of individuals grouped by their marital status, highlighting connections based on shared marital categories like single, married, or widowed.
+-   **First Graph (Marital Status)**: The graph visualization of marital status illustrates distinct clusters of individuals grouped by their marital category, such as "single," "married," "widowed," and others. Upon closer analysis, according to the graph individuals categorized as "married" exhibit connections with those in the "widowed" category, indicating similarities between these groups. In contrast, other marital statuses, such as "single," "divorced," and "separated," do not show significant interconnections.
+
+    This pattern suggests that individuals who are married and widowed may share common socioeconomic or demographic factors, such as age, income, or family size, which create a bridge of similarity between these groups. For instance, married individuals might transition into the widowed category as a natural progression in life, maintaining shared characteristics like household size or community ties.
+
+    The lack of connections between other marital statuses may reflect unique, non-overlapping circumstances or characteristics specific to those categories. For example, individuals who are "single" or "divorced" may have distinct social or economic patterns that do not align with the shared attributes of married or widowed individuals.
+
+    Understanding these connections could provide valuable insights into how marital status influences social and economic outcomes.
 
     ![](images/sim3-01.jpg)
 
--   **Second Graph (Gender)**: This graph depicts two main clusters representing gender categories (male and female), with individuals linked to their corresponding gender.
+-   **Second Graph (Gender)**: This graph depicts two main clusters representing gender categories (male and female), with individuals linked to their corresponding gender. Each individual node is linked to its respective gender category, showcasing clear separations between the two groups. The symmetry and density of the clusters highlight that the population is evenly distributed across both genders in the dataset.
+
+    Additionally, there are no direct connections between the male and female clusters, indicating that gender, as a characteristic, is an independent attribute without overlap in this visualization.
 
     ![](images/sim2-01.jpg)
 
--   **Third Graph (Race)**: The graph visualizes clusters of individuals grouped by race, showing the distribution and connections within racial categories such as White, Black, or Others.
+-   **Third Graph (Race)**: The graph visualizes clusters of individuals grouped by race, showing the distribution and connections within racial categories such as White, Black, or Others. The visualization reveals three distinct clusters, each centered around a node representing a specific racial category. Each individual node is connected to its corresponding racial group, highlighting the clear segmentation in the dataset.
+
+    The density of connections within each cluster reflects the distribution of individuals across racial categories. Larger clusters indicate higher representation within the dataset. The lack of overlapping connections between clusters suggests that race is treated as a standalone attribute, with no shared affiliations among the groups.
 
 ![](images/sim1-01.jpg)
 
-### 4.3 Traiditional Clustering Methods
+### 4.3 Traditional Clustering Methods
 
 The first step was to prepare the data, due to the memory capacity it was decided to work with the data of the Validation Set, and those variables that are nominal were transformed into factors. According to the Silhouette method, it was determined to have 2 clusters, where it was observed that the second cluster is not as homogeneous as the first one. The dendogram shows the division of the two clusters.
 
@@ -610,6 +625,8 @@ data_clust <- cutree(ds_hc, k=2)
 ```
 
 After determining the number of clusters, we examined boxplots for each variable. Notably, the second cluster includes a higher number of individuals considered poor, predominantly women. This difference may be related to the gender income gap that typically affects women negatively. Furthermore, this cluster predominantly consists of individuals whose highest educational attainment is a high school diploma. This observation supports the conclusion from the CART model that having an education level lower than a bachelor's degree increases the likelihood of being classified as poor. Additionally, the second cluster has a higher proportion of non-white individuals, which may be linked to the historical issues of racism discussed earlier in this work. Finally, a significant number of people in this cluster reside in the southern part of the United States.
+
+According to the graphs , from Cluster 2, it is observed that it is less homogeneous than Cluster 1 and includes a higher proportion of "Poor" individuals. Predominantly consists of women, non-white individuals, and those whose highest educational attainment is a high school diploma. Many individuals in this cluster are located in the Southern United States, which correlates with historical socio-economic disadvantages.
 
 ```{r}
 # Define the color palettes
@@ -687,6 +704,48 @@ grid.arrange(
   box7, ncol = 3, nrow = 3
 )
 ```
+
+The clustering analysis explicitly identifies poverty as a key outcome, with Cluster 2 showing a clear association with factors such as race, gender, and education. And similarities analysis hints at these connections but does not directly link them to poverty.
+
+#### Similarities vs. Clustering: Comparison of Results
+
+```{r}
+# Create the data for the table
+comparison_table <- data.frame(
+  Aspect = c("Marital Status", "Gender", "Race", "Poverty", "Education", "Location"),
+  Similarities_Analysis = c(
+    "Married and widowed individuals are connected, reflecting shared socio-economic characteristics.",
+    "Separate clusters for males and females, indicating distinct gender characteristics in the dataset.",
+    "Clear segmentation of racial groups with minimal overlap.",
+    "Poverty status differences are present but not explicitly explored in similarities.",
+    "Not a primary focus in the similarities analysis.",
+    "Location was not analyzed in similarities."
+  ),
+  Clustering_Analysis = c(
+    "No explicit marital status differentiation, but socio-economic vulnerability (widowed, single) aligns with Cluster 2.",
+    "Cluster 2 shows a higher proportion of females, linking gender disparity to poverty and socio-economic challenges.",
+    "Cluster 2 includes more non-white individuals, tying historical racism to increased poverty likelihood.",
+    "Cluster 2 has a higher proportion of poor individuals, correlating with gender, education, and racial disparities.",
+    "Cluster 2 predominantly includes individuals with a high school diploma, linking lower education levels to poverty.",
+    "Cluster 2 has a higher representation of individuals from the Southern U.S., correlating with socio-economic issues."
+  )
+)
+
+# Create the table in kable format
+kable(comparison_table, format = "html", escape = FALSE, col.names = c("Aspect", "Similarities Analysis", "Clustering Analysis")) %>%
+  kable_styling(full_width = TRUE, bootstrap_options = c("striped", "hover", "condensed"))
+
+```
+
+#### **Comparing Methods**
+
+The similarities analysis provides a broad overview of connections based on socio-demographic characteristics, while the clustering analysis dives deeper into how these characteristics relate to poverty and socio-economic outcomes. Together, these approaches offer complementary insights:
+
+-   **Similarities analysis** excels at revealing hidden patterns and connections within specific attributes.
+
+-   **Clustering analysis** integrates multiple variables to provide a comprehensive picture of socio-economic disparities, highlighting actionable areas like education and location for interventions.
+
+Combining these methods could enhance understanding, leveraging the connections from similarities with the deeper poverty-focused insights from clustering.
 
 ## 5. Analysis
 
@@ -981,8 +1040,6 @@ Conversation: <https://chatgpt.com/share/67578aa2-2e04-8009-b964-7e23a704e22c>
 
 The bar graphs were correctly interpreted by the LLM, suggesting that the interpretation of already-transformed information is more successful than performing complex calculations from scratch.
 
-Conversation:
-
 ### 6.3 Random Forest Analysis
 
 #### 6.2.1 LLM Analysis
@@ -1065,31 +1122,13 @@ Comparing the two decision trees, we can observe that the most significant facto
 
 ## 7. Results and Conclusions
 
-## 8. Recommendations and discussion
+The combination of similarities analysis and clustering analysis provides a complementary approach: similarities analysis uncovers hidden patterns within specific attributes, while clustering offers a holistic view of socio-economic disparities, enabling targeted interventions. Together, they enhance the understanding of socio-economic dynamics and inform more effective strategies.
 
-### **8.1 Summary of Findings**
+Education stands out as the most important factor in these models, highlighting the need to promote bachelor's degree programs across the country. Household size and marital status are also key factors. The Decision Tree also shows that being non-white in the USA increases the likelihood of experiencing poverty.
 
-### **8.2 Practical Implications**
+Finally, it was noted that an LLM is not suitable for performing calculations involving large datasets. However, this tool excels at analyzing preprocessed and well-structured data.
 
--   **Policy Development**: The models have consistently identified education as a critical determinant of poverty status. Policymakers could leverage these insights to design educational programs targeted at vulnerable populations to reduce poverty rates. Additionally, interventions to support larger households and improve marital stability could also be beneficial, as indicated by the models.
-
--   **Resource Allocation**: By utilizing the predictive power of these models, government and non-profit organizations can better allocate resources, such as social welfare benefits and educational grants, to those most likely to be in poverty.
-
--   **Tool Deployment**: Integrating the CART model into social service databases can help continuously monitor at-risk populations and dynamically adjust interventions as circumstances change.
-
-### **8.3 Future Research Directions**
-
--   **Incorporating Additional Data**: Future studies could explore the inclusion of more dynamic variables, such as employment trends or economic indicators, to enhance the models' sensitivity to economic shifts.
-
--   **Advanced Modeling Techniques**: Investigating deep learning approaches or ensemble methods that combine the strengths of multiple models could offer improvements in predictive accuracy.
-
-### **8.4 Conclusion**
-
-The application of advanced predictive modeling in assessing poverty holds considerable promise for transforming social welfare strategies. By identifying those at highest risk, resources can be allocated more effectively, and interventions can be both timely and relevant. The CART model, in particular, has proven to be an effective tool in these efforts, offering significant potential to
-
-Education stands out as the most important factor in these models, highlighting the need to promote bachelor's degree programs across the country. Household size and marital status are also key factors. Additionally, the data shows that being non-white in the USA increases the likelihood of experiencing poverty.
-
-## 9. References
+## 8. References
 
 1.  United States Census Bureau. (2024). National Poverty in America Awareness Month: January 2024 (Press Release No. CB24-SFS.003). Retrieved from <https://www.census.gov/newsroom/stories/poverty-awareness-month.html#:~:text=The%20official%20poverty%20rate%20in,decreased%20between%202021%20and%202022>
 2.  Human Rights Watch. (2022). Racial Discrimination in the United States (American Civil Liberties Union (ACLU)). Retrieved from <https://www.hrw.org/report/2022/08/08/racial-discrimination-united-states/human-rights-watch/aclu-joint-submission>
